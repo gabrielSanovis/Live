@@ -8,14 +8,16 @@ export const Container = styled.SafeAreaView`
     padding: 8px 16px;
 `;
 
-export const List = styled(FlatList<{ date: string, text: string }>)`
+export const List = styled(FlatList<{
+    from: string | null | undefined; date: string, text: string 
+}>)`
     width: 100%;
 `;
 
-export const WrapperTextChat = styled.View`
+export const WrapperTextChat = styled.View<{outside: boolean}>`
     border-radius: 10px;
     background-color: #023E8A;
-    align-self: flex-end;
+    align-self: ${({outside}) => outside ? "flex-start" : "flex-end"};
     justify-content: center;
     padding: 4px 6px;
     margin-bottom: 8px;

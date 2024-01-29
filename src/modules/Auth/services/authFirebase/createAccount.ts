@@ -1,5 +1,5 @@
 import auth from '@react-native-firebase/auth';
-import { createUserFormData } from '../../screens/SignUp';
+import { createUserFormData } from '../../types';
 
 export const createAccount = (data: createUserFormData) => {
     if(!data.email && !data.password) return;

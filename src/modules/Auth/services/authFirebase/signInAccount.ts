@@ -1,5 +1,5 @@
 import auth from "@react-native-firebase/auth"
-import { loginUserFormData } from "../../screens/SignIn"
+import { loginUserFormData } from "../../types"
 
 
 export const signInAccount = (data: loginUserFormData) => {

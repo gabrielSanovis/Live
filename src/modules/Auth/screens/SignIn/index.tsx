@@ -4,26 +4,15 @@ import { signInAccount } from "../../services/authFirebase/signInAccount";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../routes";
 import { useForm, Controller } from 'react-hook-form'
-import { Text, TextInput } from "react-native";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { loginUserFormSchema } from "./schema";
+import { loginUserFormData } from "../../types";
+import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignInScreen'>
 
-const loginUserFormSchema = z.object({
-    email: z.string({
-        required_error: "O campo email está vazio..."
-    })
-        .min(1, 'O campo email está vazio.'),
-    password: z.string({
-        required_error: "O campo senha está vazio..."
-    })
-        .min(1, 'O campo senha está vazio.')
-})
-
-export type loginUserFormData = z.infer<typeof loginUserFormSchema>
-
-export const SignIn = ({ navigation }: Props) => {
+export const SignIn = ({ navigation, route }: Props) => {
     const {
         control,
         handleSubmit,
@@ -36,43 +25,49 @@ export const SignIn = ({ navigation }: Props) => {
 
     return (
         <S.Container>
-            <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                        placeholder="E-mail"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-                name="email"
-            />
-            {errors.email ? (<Text style={{ color: "red" }}>{errors.email.message}</Text>) : null}
+            <S.WrapperFields>
+                <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <Input
+                            placeholder="E-mail"
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            showError={errors.email}
+                            ErrorMessage={errors.email?.message}
+                        />
+                    )}
+                    name="email"
+                />
 
-            <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                        placeholder="Senha"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-                name="password"
-            />
-            {errors.password ? (<Text style={{ color: "red" }}>{errors.password.message}</Text>) : null}
-            <S.LinkButton>
-                <S.LinkText onPress={handleSubmit(onSubmit)}>
-                    Logar Usuário
-                </S.LinkText>
-            </S.LinkButton>
-            <S.LinkButton onPress={() => navigation.navigate("SignUpScreen")}>
-                <S.LinkText>
-                    Navegar para o cadastro
-                </S.LinkText>
-            </S.LinkButton>
+                <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <Input
+                            placeholder="Senha"
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            showError={errors.password}
+                            ErrorMessage={errors.password?.message}
+                        />
+                    )}
+                    name="password"
+                />
+            </S.WrapperFields>
+            <S.WrapperButtons>
+                <Button
+                    title="Entrar"
+                    callback={handleSubmit(onSubmit)}
+                />
+                <Button
+                    routerName="SignUpScreen"
+                    title="Cadastrar-se"
+                    navigation={navigation}
+                    route={route}
+                />
+            </S.WrapperButtons>
         </S.Container>
     );
 }

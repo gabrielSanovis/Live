@@ -4,9 +4,10 @@ import { formatTime } from '../../utils/formatTime';
 import { saveNewMessage } from '../../services/firestore/saveDatas';
 import { realTimeMessages } from '../../services/firestore/getDatas';
 import * as S from './styles'
+import auth from '@react-native-firebase/auth';
 
 interface InitialArg {
-    chatHistoric: Array<{ date: string, text: string }>;
+    chatHistoric: Array<{ date: string, text: string, from: string | undefined | null }>;
     newText: null | { date: string, text: string };
 }
 
@@ -14,7 +15,7 @@ export interface ActionReducerChat { type: "add_new_text_in_historc" | 'add_new_
 
 const initialArg: InitialArg = {
     chatHistoric: [],
-    newText: null
+    newText: null,
 }
 
 interface ITextInput extends TextInput {
@@ -58,16 +59,18 @@ const validateRef = (ref: React.RefObject<ITextInput> | null, value: string) => 
 export const Chat = () => {
     const [state, dispatch] = useReducer(reducer, initialArg)
     let inputRef = useRef<ITextInput>(null);
+    const user = auth().currentUser?.email
 
     useEffect(() => {
         realTimeMessages(dispatch);
     }, [])
+
     return (
         <S.Container>
             <S.List
                 data={state.chatHistoric}
                 renderItem={({ item, index }) => (
-                    <S.WrapperTextChat key={index}>
+                    <S.WrapperTextChat key={index} outside={user !== item.from}>
                         <S.TextChat>{item.text}</S.TextChat>
                         <S.TextDate>{item.date}</S.TextDate>
                     </S.WrapperTextChat>

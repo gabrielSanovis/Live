@@ -1,3 +1,4 @@
+import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 interface ISaveNewMessage {
@@ -10,7 +11,8 @@ export const saveNewMessage = ({text, date}: ISaveNewMessage) => {
     .collection('Messages')
     .add({
         text: text,
-        date: date
+        date: date,
+        from: auth().currentUser?.email
     })
     .then((res) => {
         console.log("Resolved!")
